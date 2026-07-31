@@ -1,6 +1,17 @@
-# B站关注列表导出工具
+<div align=center>
 
-一个带 GUI 界面的 Python 工具，输入 B站 Cookie 即可获取当前账号的全部关注列表，并导出为格式化的 Excel 表格。
+  <h1>Bilibili_follow_export</h1>
+  <h2>B站关注列表导出工具</h2>
+
+  <img src="icon.ico" width=200></img>
+
+  <a href="https://t.me/cnbigjackson"><img src="https://img.shields.io/badge/Telegram-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white"></img></a>
+
+  <a href="https://www.bigjackson.vip"><img src="https://trendshift.io/api/badge/trendshift/repositories/11432/yearly?language=Dart"></img></a>
+  <a href="https://www.bigjackson.vip" target="_blank"><img src="https://abroad.hellogithub.com/v1/widgets/recommend.svg?rid=68d824ea55ee4b07aba6fe1dd61ac939&claim_uid=J9Qu6aDd8LT1nU0"/></img></a>
+  
+  <p>一个带 GUI 界面的 Python 工具，输入 B站 Cookie 即可获取当前账号的全部关注列表，并导出为格式化的 Excel 表格。</p>
+</div>
 
 ## 功能
 

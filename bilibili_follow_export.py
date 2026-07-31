@@ -102,6 +102,8 @@ class BilibiliFollowExport:
         self.follow_data = []  # [(uid, name), ...]
         self.follow_total = 0
         self.current_page = 0
+        self.my_name = ""  # 当前用户昵称
+        self.my_uid = ""  # 当前用户 UID
 
     # ---------- 工具方法 ----------
 
@@ -167,6 +169,8 @@ class BilibiliFollowExport:
 
             my_uid = info_data["data"]["mid"]
             my_name = info_data["data"]["name"]
+            self.my_name = my_name
+            self.my_uid = str(my_uid)
             self._log(f"   ✅ 当前用户: {my_name} (UID: {my_uid})")
 
             # Step 2: 分页获取关注列表
@@ -231,7 +235,9 @@ class BilibiliFollowExport:
         file_path = filedialog.asksaveasfilename(
             defaultextension=".xlsx",
             filetypes=[("Excel 文件", "*.xlsx")],
-            initialfile=f"B站关注列表_{len(self.follow_data)}人.xlsx",
+            initialfile=f"{self.my_name}_{self.my_uid}的B站关注列表.xlsx"
+            if self.my_name
+            else f"B站关注列表_{len(self.follow_data)}人.xlsx",
         )
         if not file_path:
             return
