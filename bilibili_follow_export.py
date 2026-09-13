@@ -48,10 +48,15 @@ class BilibiliFollowExport:
         )
         self.show_cookie_btn.pack(side=tk.LEFT, padx=(6, 0))
 
+        self.browser_cookie_btn = ttk.Button(
+            cookie_frame, text="网页登录获取", command=self._start_browser_cookie
+        )
+        self.browser_cookie_btn.pack(side=tk.LEFT, padx=(6, 0))
+
         # Cookie 获取提示
         tip_label = ttk.Label(
             main_frame,
-            text="💡 打开 B站 网页版 (bilibili.com) → F12 开发者工具 →  Application → Cookies → 复制 SESSDATA 的值",
+            text="💡 点击“网页登录获取”，在弹出的 B站窗口中完成登录，程序会自动获取 Cookie 并关闭窗口",
             foreground="gray",
             font=("Microsoft YaHei", 9),
             wraplength=580,
@@ -114,6 +119,57 @@ class BilibiliFollowExport:
         else:
             self.cookie_entry.configure(show="*")
             self.show_cookie_btn.configure(text="显示")
+
+    def _start_browser_cookie(self):
+        self.browser_cookie_btn.configure(state=tk.DISABLED)
+        self.status_var.set("请在弹出的 B站窗口中登录…")
+        self._log("已打开独立 B站登录窗口，请完成登录…")
+        threading.Thread(target=self._login_in_browser, daemon=True).start()
+
+    def _login_in_browser(self):
+        try:
+            from playwright.sync_api import sync_playwright
+
+            with sync_playwright() as playwright:
+                browser = playwright.chromium.launch(headless=False)
+                context = browser.new_context()
+                page = context.new_page()
+                page.goto("https://www.bilibili.com", wait_until="domcontentloaded")
+
+                sessdata = None
+                for _ in range(300):
+                    if page.is_closed():
+                        break
+                    cookies = context.cookies("https://www.bilibili.com")
+                    sessdata = next(
+                        (cookie["value"] for cookie in cookies if cookie["name"] == "SESSDATA"),
+                        None,
+                    )
+                    if sessdata:
+                        break
+                    page.wait_for_timeout(1000)
+
+                if not sessdata:
+                    raise RuntimeError("登录窗口已关闭，或等待登录超时")
+
+                self.root.after(0, lambda: self.cookie_var.set(sessdata))
+                self.root.after(0, lambda: self._log("✅ 登录成功，已自动获取 SESSDATA"))
+                context.close()
+                browser.close()
+        except ImportError:
+            self.root.after(
+                0,
+                lambda: messagebox.showerror(
+                    "缺少依赖", "请先运行：pip install playwright，然后运行：playwright install chromium"
+                ),
+            )
+        except Exception as e:
+            error_message = str(e)
+            self.root.after(0, lambda: self._log(f"❌ 获取浏览器 Cookie 失败: {error_message}"))
+            self.root.after(0, lambda: messagebox.showerror("获取失败", error_message))
+        finally:
+            self.root.after(0, lambda: self.browser_cookie_btn.configure(state=tk.NORMAL))
+            self.root.after(0, lambda: self.status_var.set("就绪"))
 
     def _log(self, msg: str):
         self.log_area.configure(state=tk.NORMAL)

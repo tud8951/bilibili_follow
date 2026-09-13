@@ -15,7 +15,8 @@
 
 ## 功能
 
-- 输入 `SESSDATA` Cookie 即可登录
+- 支持在程序内弹出独立 B 站登录窗口，完成登录后自动获取 `SESSDATA`
+- 可直接获取当前账号的全部关注列表
 - 自动分页拉取全部关注列表
 - 导出为 `.xlsx` 文件，包含：序号、UID、用户名、个人空间链接
 - 导出的 Excel 带有表格样式（冻结首行、超链接、蓝底白字表头）
@@ -24,28 +25,41 @@
 
 ### 1. 安装依赖
 
+在项目目录执行：
+
 ```bash
-pip install requests openpyxl
+pip install requests openpyxl playwright
+playwright install chromium
 ```
 
-### 2. 获取 Cookie
+如果系统提示未安装浏览器内核，请重新执行最后一条命令。
 
-1. 浏览器打开 [bilibili.com](https://www.bilibili.com) 并登录
-2. 按 `F12` 打开开发者工具
-3. 进入 **Application** → **Cookies** → `bilibili.com`
-4. 复制 `SESSDATA` 的值
-
-### 3. 运行程序
+### 2. 运行程序
 
 ```bash
 python bilibili_follow_export.py
 ```
 
-### 4. 操作
+### 3. 获取 Cookie
 
-1. 将 `SESSDATA` 粘贴到输入框
+点击右侧的「网页登录获取」按钮，程序会打开一个独立的 B 站登录窗口。用户在窗口中登录后，程序会自动读取 `SESSDATA`，填入输入框，并关闭该窗口。
+
+如果不想用登录窗口，也可以直接把 `SESSDATA` 手动粘贴到输入框中。
+
+### 4. 操作流程
+
+1. 点击「网页登录获取」或手工填写 `SESSDATA`
 2. 点击「获取关注列表」
 3. 获取完成后点击「导出 Excel」
+
+### 5. 手动获取 Cookie（备用方案）
+
+如果登录窗口方式不适用，可按以下步骤手动获取：
+
+1. 浏览器打开 [bilibili.com](https://www.bilibili.com) 并登录
+2. 按 `F12` 打开开发者工具
+3. 进入 **Application** → **Cookies** → `bilibili.com`
+4. 复制 `SESSDATA` 的值
 
 ## 技术栈
 
@@ -53,6 +67,7 @@ python bilibili_follow_export.py
 - tkinter（GUI）
 - requests（HTTP 请求）
 - openpyxl（Excel 导出）
+- playwright（B站登录窗口与 Cookie 获取）
 
 ## 许可证
 
