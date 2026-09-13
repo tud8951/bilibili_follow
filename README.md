@@ -40,19 +40,39 @@ playwright install chromium
 python bilibili_follow_export.py
 ```
 
-### 3. 获取 Cookie
+### 3. 使用 EXE 版本
+
+项目已提供 Windows 单文件程序：`dist/BilibiliFollowExport.exe`。
+
+也可以自行重新打包：
+
+```bash
+pip install pyinstaller
+pyinstaller --noconfirm --clean --onefile --windowed --name BilibiliFollowExport --icon icon.ico bilibili_follow_export.py
+```
+
+打包完成后，EXE 文件位于 `dist/BilibiliFollowExport.exe`。
+
+EXE 中不包含 Playwright 的 Chromium 浏览器内核。首次在新电脑上使用「网页登录获取」功能时，请先安装 Python、Playwright 及浏览器内核：
+
+```bash
+pip install playwright
+playwright install chromium
+```
+
+### 4. 获取 Cookie
 
 点击右侧的「网页登录获取」按钮，程序会打开一个独立的 B 站登录窗口。用户在窗口中登录后，程序会自动读取 `SESSDATA`，填入输入框，并关闭该窗口。
 
 如果不想用登录窗口，也可以直接把 `SESSDATA` 手动粘贴到输入框中。
 
-### 4. 操作流程
+### 5. 操作流程
 
 1. 点击「网页登录获取」或手工填写 `SESSDATA`
 2. 点击「获取关注列表」
 3. 获取完成后点击「导出 Excel」
 
-### 5. 手动获取 Cookie（备用方案）
+### 6. 手动获取 Cookie（备用方案）
 
 如果登录窗口方式不适用，可按以下步骤手动获取：
 
